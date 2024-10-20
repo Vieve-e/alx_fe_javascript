@@ -48,3 +48,51 @@ function addNewQuote() {
 // Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("addQuoteButton").addEventListener("click", createAddQuoteForm);
+
+// Function to show a random quote
+function showRandomQuote() {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    const randomQuote = quotes[randomIndex];
+
+    // Clear previous quote display
+    const quoteDisplay = document.getElementById("quoteDisplay");
+    quoteDisplay.innerHTML = ''; // Clear existing content
+
+    // Create elements for new quote display
+    const quoteText = document.createElement("p");
+    const quoteCategory = document.createElement("p");
+
+    // Set the text content
+    quoteText.innerHTML = `<strong>${randomQuote.text}</strong>`;
+    quoteCategory.textContent = `Category: ${randomQuote.category}`;
+
+    // Append the new elements to the display
+    quoteDisplay.appendChild(quoteText);
+    quoteDisplay.appendChild(quoteCategory);
+}
+
+// Function to add a new quote
+function addQuote() {
+    const newQuoteText = document.getElementById("newQuoteText").value;
+    const newQuoteCategory = document.getElementById("newQuoteCategory").value;
+
+    // Check if both fields are filled
+    if (newQuoteText && newQuoteCategory) {
+        // Add the new quote to the array
+        quotes.push({ text: newQuoteText, category: newQuoteCategory });
+
+        // Clear input fields
+        document.getElementById("newQuoteText").value = '';
+        document.getElementById("newQuoteCategory").value = '';
+
+        alert("Quote added successfully!");
+
+        // Optionally, you can immediately show the new quote
+        showRandomQuote();
+    } else {
+        alert("Please fill in both fields.");
+    }
+}
+
+// Event listener for the new quote button
+document.getElementById("newQuote").addEventListener("click", showRandomQuote);
