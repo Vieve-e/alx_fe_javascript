@@ -48,5 +48,3 @@ function addNewQuote() {
 // Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("addQuoteButton").addEventListener("click", createAddQuoteForm);
-
-
