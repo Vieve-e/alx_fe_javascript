@@ -85,6 +85,12 @@ function addQuote() {
         document.getElementById("newQuoteText").value = '';
         document.getElementById("newQuoteCategory").value = '';
 
+       // Update the categories dropdown if a new category is added
+       updateCategoryDropdown();
+    
+      // Persist quotes and categories in localStorage
+      updateLocalStorage();
+
         alert("Quote added successfully!");
 
         // Optionally, you can immediately show the new quote
@@ -94,14 +100,11 @@ function addQuote() {
     }
 }
 
-// Event listener for the new quote button
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-
-// Function to update the category dropdown
-function updateCategoryDropdown() {
+// Function to update the categories dropdown dynamically based on available quotes
+function populateCategories() {
     const categoryFilter = document.getElementById("categoryFilter");
-    
-    // Get unique categories
+  
+    // Get unique categories from quotes
     const categories = [...new Set(quotes.map(quote => quote.category))];
   
     // Clear current options
@@ -114,12 +117,22 @@ function updateCategoryDropdown() {
       option.textContent = category;
       categoryFilter.appendChild(option);
     });
+  
+    // Restore last selected category from localStorage
+    const lastSelectedCategory = localStorage.getItem("selectedCategory");
+    if (lastSelectedCategory) {
+      categoryFilter.value = lastSelectedCategory;
+      filterQuotes(); // Apply the filter based on saved selection
+    }
   }
   
-  // Function to filter quotes based on selected category
+  // Function to filter quotes based on the selected category
   function filterQuotes() {
     const selectedCategory = document.getElementById("categoryFilter").value;
     const quoteDisplay = document.getElementById("quoteDisplay");
+  
+    // Save selected category in localStorage
+    localStorage.setItem("selectedCategory", selectedCategory);
   
     // Filter quotes by the selected category
     const filteredQuotes = selectedCategory === "all"
@@ -135,8 +148,22 @@ function updateCategoryDropdown() {
     }
   }
   
-  // Initial setup: Update the dropdown on page load
+  // Function to update localStorage with quotes and categories
+  function updateLocalStorage() {
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+  }
+  
+  // Load quotes from localStorage if they exist, or use default quotes
+  function loadQuotesFromLocalStorage() {
+    const storedQuotes = localStorage.getItem("quotes");
+    if (storedQuotes) {
+      quotes = JSON.parse(storedQuotes);
+    }
+  }
+  
+  // Initial setup: Update the dropdown on page load, and load stored quotes
   window.onload = function() {
-    updateCategoryDropdown();
+    loadQuotesFromLocalStorage(); // Load stored quotes if they exist
+    populateCategories(); // Populate categories in the dropdown
     document.getElementById("newQuote").addEventListener("click", showRandomQuote);
   };
