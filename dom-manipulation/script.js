@@ -96,3 +96,47 @@ function addQuote() {
 
 // Event listener for the new quote button
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+
+// Function to update the category dropdown
+function updateCategoryDropdown() {
+    const categoryFilter = document.getElementById("categoryFilter");
+    
+    // Get unique categories
+    const categories = [...new Set(quotes.map(quote => quote.category))];
+  
+    // Clear current options
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+  
+    // Populate dropdown with unique categories
+    categories.forEach(category => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      categoryFilter.appendChild(option);
+    });
+  }
+  
+  // Function to filter quotes based on selected category
+  function filterQuotes() {
+    const selectedCategory = document.getElementById("categoryFilter").value;
+    const quoteDisplay = document.getElementById("quoteDisplay");
+  
+    // Filter quotes by the selected category
+    const filteredQuotes = selectedCategory === "all"
+      ? quotes
+      : quotes.filter(quote => quote.category === selectedCategory);
+  
+    // Display the first filtered quote or a message if none match
+    if (filteredQuotes.length > 0) {
+      const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
+      quoteDisplay.innerHTML = `"${randomQuote.text}" - Category: ${randomQuote.category}`;
+    } else {
+      quoteDisplay.innerHTML = "No quotes available for this category.";
+    }
+  }
+  
+  // Initial setup: Update the dropdown on page load
+  window.onload = function() {
+    updateCategoryDropdown();
+    document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+  };
