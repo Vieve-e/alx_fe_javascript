@@ -147,6 +147,40 @@ function populateCategories() {
       quoteDisplay.innerHTML = "No quotes available for this category.";
     }
   }
+    // Function to save quotes to localStorage
+function saveQuotes() {
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+  }
+  
+  // Function to export quotes as a JSON file
+  function exportQuotesToJson() {
+    // Convert the quotes array to a JSON string
+    const dataStr = JSON.stringify(quotes, null, 2); // Pretty-print JSON
+    const blob = new Blob([dataStr], { type: 'application/json' }); // Create Blob with JSON MIME type
+    const url = URL.createObjectURL(blob);
+  
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quotes.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a); // Clean up
+  }
+  
+  // Function to import quotes from a JSON file
+  function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(e) {
+      const importedQuotes = JSON.parse(e.target.result);
+  
+      // Add the imported quotes to the existing array and save to localStorage
+      quotes.push(...importedQuotes);
+      saveQuotes();
+      alert('Quotes imported successfully!');
+    };
+  
+    fileReader.readAsText(event.target.files[0]); // Read uploaded file as text
+  }
   
   // Function to update localStorage with quotes and categories
   function updateLocalStorage() {
@@ -165,5 +199,17 @@ function populateCategories() {
   window.onload = function() {
     loadQuotesFromLocalStorage(); // Load stored quotes if they exist
     populateCategories(); // Populate categories in the dropdown
-    document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-  };
+    loadLastViewedQuote(); // Restore last viewed quote from sessionStorage
+
+  document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+  document.getElementById("exportQuotes").addEventListener("click", exportQuotesToJson);
+};
+// Function to load last viewed quote from sessionStorage
+function loadLastViewedQuote() {
+    const lastViewedQuote = sessionStorage.getItem("lastViewedQuote");
+    if (lastViewedQuote) {
+      const quote = JSON.parse(lastViewedQuote);
+      const quoteDisplay = document.getElementById("quoteDisplay");
+      quoteDisplay.innerHTML = `"${quote.text}" - Category: ${quote.category}`;
+    }
+  }
