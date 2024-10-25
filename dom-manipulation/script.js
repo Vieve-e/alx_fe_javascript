@@ -214,7 +214,7 @@ function loadLastViewedQuote() {
     }
   }
 
-  let quotes = [];
+  let quote = [];
 const serverUrl = 'https://jsonplaceholder.typicode.com/posts'; // Mock API endpoint
 let syncInterval;
 
@@ -244,7 +244,42 @@ function fetchQuotesFromServer() {
         })
         .catch(error => console.error('Error fetching quotes:', error));
 }
-
+// Adding a new quote and syncing it to "server"
+async function addQuote() {
+    const newQuoteText = document.getElementById("newQuoteText").value;
+    const newQuoteCategory = document.getElementById("newQuoteCategory").value;
+    const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
+  
+    const newQuote = {
+      id: Date.now(), // Unique ID
+      text: newQuoteText,
+      category: newQuoteCategory,
+    };
+  
+    localQuotes.push(newQuote);
+    localStorage.setItem('quotes', JSON.stringify(localQuotes));
+  
+    // Simulate a POST to the server
+    await simulateServerPost(newQuote);
+    displayQuotes(localQuotes);
+  }
+  
+  // Function to simulate a server POST request
+  async function simulateServerPost(quote) {
+    try {
+      const response = await fetch(apiURL, {
+        method: "POST",
+        body: JSON.stringify(quote),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        console.log("Quote added to server:", quote);
+      }
+    } catch (error) {
+      console.error("Error syncing with server:", error);
+    }
+  }
+  
 // Display a random quote
 function displayQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
