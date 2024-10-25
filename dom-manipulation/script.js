@@ -263,7 +263,8 @@ async function addQuote() {
     await simulateServerPost(newQuote);
     displayQuotes(localQuotes);
   }
-  
+  // Show sync notification
+  showSyncNotification("Quotes synced with server!");
   // Function to simulate a server POST request
   async function simulateServerPost(quote) {
     try {
